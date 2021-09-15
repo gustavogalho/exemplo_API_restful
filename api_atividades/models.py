@@ -1,12 +1,12 @@
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import relationship, scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.sql.expression import column
 from sqlalchemy.sql.schema import ForeignKey
 
-engine = create_engine('sqlite:///atividades.db', convert_unicode=True)
+engine = create_engine("sqlite:///atividades.db")
 db_session = scoped_session(sessionmaker(autocommit=False,
-                                         binds=engine))
+                                         bind=engine))
+
 
 Base = declarative_base()
 Base.query = db_session.query_property()
@@ -20,6 +20,14 @@ class Pessoas(Base):
 
     def __repr__(self):
         return "<Pessoa {}>".format(self.nome)
+
+    def save(self):
+        db_session.add(self)
+        db_session.commit()
+
+    def delete(self):
+        db_session.delete(self)
+        db_session.commit()
 
 
 class Atividades(Base):
